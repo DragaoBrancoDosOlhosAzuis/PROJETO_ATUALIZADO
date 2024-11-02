@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - Gerenciamento de Pousadas e Clientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Menu Principal</h1>
+        <p>Bem-vindo ao sistema de gerenciamento. Escolha uma das opções abaixo:</p>
+        <!-- Botão de Deslogar -->
+        <button onclick="confirmLogout()" class="logout-button">Deslogar</button>
+    </header>
+
+    <main class="menu-container">
+        <!-- Botão para Gerenciar Clientes -->
+        <section class="menu-option">
+            <h2>Gerenciar Clientes</h2>
+            <p>Para gerenciar o cadastro, listagem e edição de clientes, clique no botão abaixo.</p>
+            <a href="/clientes" class="menu-button">Ir para Clientes</a>
+        </section>
+
+        <!-- Botão para Gerenciar Pousadas -->
+        <section class="menu-option">
+            <h2>Gerenciar Pousadas</h2>
+            <p>Para gerenciar o cadastro, listagem, edição e filtragem de pousadas, clique no botão abaixo.</p>
+            <a href="/pousadas" class="menu-button">Ir para Pousadas</a>
+        </section>
+        
+        <!-- Botão para Reservar Pousadas -->
+        <section class="menu-option">
+            <h2>Reservar Pousada</h2>
+            <p>Para fazer uma nova reserva de pousada, clique no botão abaixo.</p>
+            <a href="/reservas" class="menu-button">Ir para Reservas</a>
+        </section>
+    </main>
+
+    <!-- JavaScript para confirmar logout -->
+    <script>
+        function confirmLogout() {
+            if (confirm("Tem certeza que deseja deslogar?")) {
+                window.location.href = "/logout";
+            }
+        }
+    </script>
+</body>
+</html>
