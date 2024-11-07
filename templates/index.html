@@ -25,25 +25,39 @@
         <!-- Botão para Gerenciar Pousadas -->
         <section class="menu-option">
             <h2>Gerenciar Pousadas</h2>
-            <p>Para gerenciar o cadastro, listagem, edição e filtragem de pousadas, clique no botão abaixo.</p>
+            <p>Para gerenciar o cadastro, listagem e edição de pousadas, clique no botão abaixo.</p>
             <a href="/pousadas" class="menu-button">Ir para Pousadas</a>
         </section>
-        
-        <!-- Botão para Reservar Pousadas -->
+
+        <!-- Botão para Reservas -->
         <section class="menu-option">
-            <h2>Reservar Pousada</h2>
-            <p>Para fazer uma nova reserva de pousada, clique no botão abaixo.</p>
+            <h2>Reservas</h2>
+            <p>Para gerenciar as reservas, clique no botão abaixo.</p>
             <a href="/reservas" class="menu-button">Ir para Reservas</a>
         </section>
-    </main>
 
-    <!-- JavaScript para confirmar logout -->
     <script>
         function confirmLogout() {
-            if (confirm("Tem certeza que deseja deslogar?")) {
+            if (confirm("Você realmente deseja sair?")) {
                 window.location.href = "/logout";
             }
         }
     </script>
+
+    <button id="chatbotButton">Chat</button>
+
+    <div id="chatbotWindow" style="display: none; position: fixed; bottom: 100px; right: 20px;">
+        <div id="chatbotHeader">Chatbot</div>
+        <div id="chatbotContent">
+            <div class="message bot-message">Olá! Como posso ajudar você hoje?</div>
+        </div>
+        <div id="chatbotInputContainer">
+            <input type="text" id="chatbotInput" placeholder="Digite sua mensagem...">
+            <button id="sendButton">Enviar</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-pOa0tNBRFnuCxOxdFYbYJ2KwSgDkWbg4NTqxrmdESBCjvXG6R/QpuYo/Dsw0r50V" crossorigin="anonymous"></script>
 </body>
 </html>

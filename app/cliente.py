@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.db_config import db, Cliente
+from app.db_config import db_clientes, Cliente
 from tinydb import Query
 
 cliente_bp = Blueprint('cliente', __name__)
@@ -12,8 +12,7 @@ def cadastrar_cliente():
     email = request.form.get('email')
 
     if nome and cpf_cnpj and telefone and email:
-        db.insert({
-            'tipo': 'cliente',
+        db_clientes.insert({
             'nome': nome,
             'cpf_cnpj': cpf_cnpj,
             'telefone': telefone,
@@ -24,7 +23,7 @@ def cadastrar_cliente():
 
 @cliente_bp.route('/listar_clientes', methods=['GET'])
 def listar_clientes():
-    clientes = db.search(Cliente.tipo == 'cliente')
+    clientes = db_clientes.search(Cliente.cpf_cnpj.exists())
     return jsonify(clientes), 200
 
 @cliente_bp.route('/editar_cliente', methods=['POST'])
@@ -35,8 +34,7 @@ def editar_cliente():
     email = request.form.get('email')
 
     if cpf_cnpj:
-        Cliente = Query()
-        db.update({
+        db_clientes.update({
             'nome': nome,
             'telefone': telefone,
             'email': email
@@ -49,7 +47,6 @@ def remover_cliente():
     cpf_cnpj = request.form.get('cpf_cnpj')
 
     if cpf_cnpj:
-        Cliente = Query()
-        db.remove((Cliente.tipo == 'cliente') & (Cliente.cpf_cnpj == cpf_cnpj))
+        db_clientes.remove(Cliente.cpf_cnpj == cpf_cnpj)
         return jsonify({'message': 'Cliente removido com sucesso!'}), 200
     return jsonify({'message': 'Falha ao remover cliente! Campos vazios.'}), 400
