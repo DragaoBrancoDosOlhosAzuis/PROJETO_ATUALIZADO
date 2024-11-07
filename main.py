@@ -1,5 +1,5 @@
 from flask import Flask, session, redirect, url_for, render_template, request, jsonify
-from app.db_config import db_funcionarios, Funcionario, db
+from app.db_config import db_funcionarios, Funcionario, db_reservas
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.cliente import cliente_bp
 from app.pousada import pousada_bp
@@ -69,6 +69,14 @@ def reservas():
         return redirect(url_for('login'))
     return render_template('reservas.html')
 
+@app.route('/chat')
+def chat():
+     # Verifica se o usuário está na sessão, caso contrário, redireciona para login
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    return render_template('chat.html')
+
+
 # Rota para listar todas as reservas
 @app.route('/listar_reservas', methods=['GET'])
 def listar_reservas():
@@ -77,7 +85,7 @@ def listar_reservas():
         return redirect(url_for('login'))
     
     Reserva = Query()
-    reservas = db.search(Reserva.tipo == 'reserva')
+    reservas = db_reservas.search(Reserva.pousada_id.exists())
     return jsonify(reservas), 200
 
 # Rota para logout

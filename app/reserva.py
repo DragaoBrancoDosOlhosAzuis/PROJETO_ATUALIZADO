@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.db_config import db
+from app.db_config import db_reservas, db_pousadas, Reserva, Pousada
 from tinydb import Query
 
 reserva_bp = Blueprint('reserva', __name__)
@@ -11,20 +11,18 @@ def reservar_pousada():
     data_fim = request.form.get('data_fim')
 
     if cpf_cnpj and pousada_id:
-        Reserva = Query()
-        reservas = db.search((Reserva.tipo == 'reserva') & (Reserva.pousada_id == pousada_id))
+        reservas = db_reservas.search(Reserva.pousada_id == pousada_id)
         if reservas:
             return jsonify({'message': 'Pousada já reservada!'}), 400
 
-        db.insert({'tipo': 'reserva', 'cpf_cnpj': cpf_cnpj, 'pousada_id': pousada_id, 'data_fim': data_fim})
-        db.update({'status': 'reservada'}, Query().id == pousada_id)
+        db_reservas.insert({'cpf_cnpj': cpf_cnpj, 'pousada_id': pousada_id, 'data_fim': data_fim})
+        db_pousadas.update({'status': 'reservada'}, Pousada.id == pousada_id)
         return jsonify({'message': 'Reserva feita com sucesso!'}), 200
     return jsonify({'message': 'Falha ao reservar pousada! Campos vazios.'}), 400
 
 @reserva_bp.route('/listar_reservas', methods=['GET'])
 def listar_reservas():
-    Reserva = Query()
-    reservas = db.search(Reserva.tipo == 'reserva')
+    reservas = db_reservas.search(Reserva.pousada_id.exists())
     return jsonify(reservas), 200
 
 @reserva_bp.route('/editar_reserva', methods=['POST'])
@@ -34,10 +32,9 @@ def editar_reserva():
     data_fim = request.form.get('data_fim')
 
     if cpf_cnpj and pousada_id:
-        Reserva = Query()
-        result = db.update(
+        result = db_reservas.update(
             {'data_fim': data_fim},
-            (Reserva.tipo == 'reserva') & (Reserva.cpf_cnpj == cpf_cnpj) & (Reserva.pousada_id == pousada_id)
+            (Reserva.cpf_cnpj == cpf_cnpj) & (Reserva.pousada_id == pousada_id)
         )
 
         if result:
@@ -53,8 +50,7 @@ def remover_reserva():
     pousada_id = request.form.get('pousada_id')
 
     if cpf_cnpj and pousada_id:
-        Reserva = Query()
-        db.remove((Reserva.tipo == 'reserva') & (Reserva.cpf_cnpj == cpf_cnpj) & (Reserva.pousada_id == pousada_id))
-        db.update({'status': 'livre'}, Query().id == pousada_id)  # Define a pousada como "livre" após remoção da reserva
+        db_reservas.remove((Reserva.cpf_cnpj == cpf_cnpj) & (Reserva.pousada_id == pousada_id))
+        db_pousadas.update({'status': 'livre'}, Pousada.id == pousada_id)
         return jsonify({'message': 'Reserva removida com sucesso!'}), 200
     return jsonify({'message': 'Falha ao remover reserva! Campos vazios.'}), 400

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.db_config import db, Pousada
+from app.db_config import db_pousadas, Pousada
 from tinydb import Query
 
 pousada_bp = Blueprint('pousada', __name__)
@@ -11,8 +11,7 @@ def cadastrar_pousada():
     valor = request.form.get('valor')
 
     if nome and pousada_id and valor:
-        db.insert({
-            'tipo': 'pousada',
+        db_pousadas.insert({
             'nome': nome,
             'id': pousada_id,
             'valor': valor,
@@ -23,7 +22,7 @@ def cadastrar_pousada():
 
 @pousada_bp.route('/listar_pousadas', methods=['GET'])
 def listar_pousadas():
-    pousadas = db.search(Pousada.tipo == 'pousada')
+    pousadas = db_pousadas.search(Pousada.id.exists())
     return jsonify(pousadas), 200
 
 @pousada_bp.route('/editar_pousada', methods=['POST'])
@@ -34,8 +33,7 @@ def editar_pousada():
     status = request.form.get('status')
 
     if pousada_id:
-        Pousada = Query()
-        db.update({
+        db_pousadas.update({
             'nome': nome,
             'valor': valor,
             'status': status
@@ -48,8 +46,6 @@ def remover_pousada():
     pousada_id = request.form.get('id_pousada')
 
     if pousada_id:
-        Pousada = Query()
-        db.remove((Pousada.tipo == 'pousada') & (Pousada.id == pousada_id))
+        db_pousadas.remove(Pousada.id == pousada_id)
         return jsonify({'message': 'Pousada removida com sucesso!'}), 200
     return jsonify({'message': 'Falha ao remover pousada! Campos vazios.'}), 400
-
