@@ -1,6 +1,10 @@
 from flask import Flask, session, redirect, url_for, render_template, request, jsonify
+<<<<<<< HEAD
 from flask_cors import CORS
 from app.db_config import db_funcionarios, Funcionario, db_reservas, db_clientes, db_pousadas
+=======
+from app.db_config import db_funcionarios, Funcionario, db_reservas
+>>>>>>> 412eb28f518c8d638e83e68597755a303a14388f
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.cliente import cliente_bp
 from app.pousada import pousada_bp
@@ -66,13 +70,23 @@ def reservas():
         return redirect(url_for('login'))
     return render_template('reservas.html')
 
+<<<<<<< HEAD
 # Rota para o chat
 @app.route('/chat')
 def chat():
+=======
+@app.route('/chat')
+def chat():
+     # Verifica se o usuário está na sessão, caso contrário, redireciona para login
+>>>>>>> 412eb28f518c8d638e83e68597755a303a14388f
     if 'user' not in session:
         return redirect(url_for('login'))
     return render_template('chat.html')
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 412eb28f518c8d638e83e68597755a303a14388f
 # Rota para listar todas as reservas
 @app.route('/listar_reservas', methods=['GET'])
 def listar_reservas():
